@@ -1,8 +1,60 @@
-import React from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import { auth } from "../firebase/firebase";
+
 
 const Login = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+  try {
+    const userCred = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    const token = await userCred.user.getIdToken();
+
+    await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    navigate("/explore");
+  } catch (err) {
+    alert(err.message);
+  }
+};
+const handleGoogleLogin = async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+
+    const token = await result.user.getIdToken();
+
+    await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    navigate("/explore");
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-neutral-900 text-neutral-100 flex flex-col">
@@ -41,17 +93,21 @@ const Login = () => {
           <div className="space-y-4">
             <input
               type="text"
-              placeholder="Username or Email"
+              placeholder=" Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full p-3 bg-neutral-900 border border-neutral-700 rounded-lg focus:outline-none focus:border-emerald-500"
             />
 
             <input
               type="password"
               placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full p-3 bg-neutral-900 border border-neutral-700 rounded-lg focus:outline-none focus:border-emerald-500"
             />
 
-            <button className="w-full py-3 bg-emerald-500 rounded-lg font-semibold hover:bg-emerald-600 transition">
+            <button onClick={handleLogin} className="w-full py-3 bg-emerald-500 rounded-lg font-semibold hover:bg-emerald-600 transition">
               Login
             </button>
           </div>
@@ -62,7 +118,7 @@ const Login = () => {
             <div className="flex-grow border-t border-neutral-700"></div>
           </div>
 
-          <button className="w-full py-3 flex items-center justify-center gap-3 border border-neutral-700 rounded-lg hover:border-emerald-500 hover:text-emerald-400 transition">
+          <button  onClick={handleGoogleLogin} className="w-full py-3 flex items-center justify-center gap-3 border border-neutral-700 rounded-lg hover:border-emerald-500 hover:text-emerald-400 transition">
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
               alt="Google"

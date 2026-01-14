@@ -42,7 +42,7 @@ const Landing = () => {
 
         <div className="flex gap-4 justify-center mt-8">
           <button
-  onClick={() => navigate("/explore")}
+  onClick={() => navigate("/login")}
   className="px-8 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-all font-medium"
 >
   Get Started
