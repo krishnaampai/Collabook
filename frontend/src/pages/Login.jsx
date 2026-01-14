@@ -30,7 +30,7 @@ const Login = () => {
       },
     });
 
-    navigate("/explore");
+    navigate("/dashboard");
   } catch (err) {
     alert(err.message);
   }
@@ -49,7 +49,7 @@ const handleGoogleLogin = async () => {
       },
     });
 
-    navigate("/explore");
+    navigate("/dashboard");
   } catch (err) {
     alert(err.message);
   }
