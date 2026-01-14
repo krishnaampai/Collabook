@@ -8,7 +8,12 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-app.use("/login",require("./routes/loginRoutes"));
+app.get('/',(req,res)=>{
+  console.log("Landing")
+  res.status(200).send("hi")
+})
+
+app.use("/login",require("./routes/userRoutes"));
 
 // start server
 app.listen(PORT, () => {
