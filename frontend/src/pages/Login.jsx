@@ -51,9 +51,13 @@ const Login = () => {
               className="w-full p-3 bg-neutral-900 border border-neutral-700 rounded-lg focus:outline-none focus:border-emerald-500"
             />
 
-            <button className="w-full py-3 bg-emerald-500 rounded-lg font-semibold hover:bg-emerald-600 transition">
-              Login
-            </button>
+            <button
+  onClick={() => navigate("/dashboard")}
+  className="w-full py-3 bg-emerald-500 rounded-lg font-semibold hover:bg-emerald-600 transition"
+>
+  Login
+</button>
+
           </div>
 
           <div className="flex items-center my-6">
