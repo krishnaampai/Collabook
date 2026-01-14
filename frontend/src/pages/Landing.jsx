@@ -1,6 +1,9 @@
 import React from 'react'
+import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-neutral-900 text-neutral-100">
 
@@ -10,9 +13,13 @@ const Landing = () => {
           <h1 className="text-xl font-bold text-emerald-400">
             Collabook
           </h1>
-          <button className="px-5 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors">
-            Login
-          </button>
+          <button
+  onClick={() => navigate("/login")}
+  className="px-5 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
+>
+  Login
+</button>
+
         </div>
       </nav>
 
@@ -34,9 +41,13 @@ const Landing = () => {
         </p>
 
         <div className="flex gap-4 justify-center mt-8">
-          <button className="px-8 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-all font-medium">
-            Get Started
-          </button>
+          <button
+  onClick={() => navigate("/explore")}
+  className="px-8 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-all font-medium"
+>
+  Get Started
+</button>
+
           <button className="px-8 py-3 border border-neutral-600 text-neutral-300 rounded-xl hover:border-emerald-500 hover:text-emerald-300 transition-all">
             Learn More
           </button>
