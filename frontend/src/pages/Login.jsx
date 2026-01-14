@@ -23,14 +23,7 @@ const Login = () => {
 
     const token = await userCred.user.getIdToken();
 
-    await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    navigate("/explore");
+    navigate("/dashboard");
   } catch (err) {
     alert(err.message);
   }
@@ -42,14 +35,7 @@ const handleGoogleLogin = async () => {
 
     const token = await result.user.getIdToken();
 
-    await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    navigate("/explore");
+    navigate("/dashboard");
   } catch (err) {
     alert(err.message);
   }
