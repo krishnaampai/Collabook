@@ -1,22 +1,16 @@
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { db } from "../firebase/firebase";
-import { auth } from "../firebase/firebase";
+import { auth, db } from "../firebase/firebase";
 
-// Save chapter metadata (PDF)
-export const saveChapter = async ({
-  title,
-  pdfUrl,
-  notebookId,
-}) => {
+export const addChapter = async ({ notebookId, title, pdfUrl }) => {
   if (!auth.currentUser) {
-    throw new Error("Not logged in");
+    throw new Error("User not logged in");
   }
 
   await addDoc(collection(db, "chapters"), {
+    notebookId,
     title,
     pdfUrl,
-    notebookId,
-    ownerId: auth.currentUser.uid,
+    createdBy: auth.currentUser.uid,
     createdAt: serverTimestamp(),
   });
 };

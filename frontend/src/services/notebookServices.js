@@ -12,6 +12,8 @@ export const createNotebook = async (title) => {
     title,
     ownerId: auth.currentUser.uid,
     createdAt: serverTimestamp(),
+    collaborators: [],
+    isSaved: false
   });
 
   return docRef.id; // notebookId
