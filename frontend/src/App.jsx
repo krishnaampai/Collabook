@@ -3,9 +3,8 @@ import Landing from "./pages/landing";
 import Login from "./pages/Login";
 import Explore from "./pages/Explore";
 import Dashboard from "./pages/Dashboard";
-import Notebook from "./pages/notebook";
-import Profile from "./pages/Profile";
-
+import Notebook from "./pages/Chapter";
+import NotebookPage from "./pages/NotebookPage";
 function App() {
   return (
     <Routes>
@@ -17,6 +16,8 @@ function App() {
       <Route path="/profile" element={<Profile />} />
 
 
+      <Route path="/chapter/:id" element={<Notebook />} />
+      <Route path="/notebook/:notebookId" element={<NotebookPage />} />
 
     </Routes>
   );

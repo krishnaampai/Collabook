@@ -3,7 +3,7 @@ const router = express.Router();
 
 // test route
 router.get("/", (req, res) => {
-  res.json({ message: "Login route working" });
+  res.json({ message: "users route working" });
 });
 
 module.exports = router;

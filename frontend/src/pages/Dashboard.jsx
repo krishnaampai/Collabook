@@ -9,6 +9,24 @@ import NotificationPopup from "../components/NotificationPopup";
 import CreateNotebookPopup from "../components/CreateNotebookPopup";
 import AppLayout from "../layouts/AppLayout";
 
+const Stars = ({ rating }) => {
+  const fullStars = Math.floor(rating);
+  const halfStar = rating % 1 >= 0.5;
+
+  return (
+    <div className="flex items-center gap-1">
+      {[...Array(5)].map((_, i) => {
+        if (i < fullStars) return <span key={i}>⭐</span>;
+        if (i === fullStars && halfStar) return <span key={i}>⭐</span>;
+        return (
+          <span key={i} className="opacity-30">⭐</span>
+        );
+      })}
+    </div>
+  );
+};
+
+
 const Dashboard = () => {
   const navigate = useNavigate();
 
@@ -171,7 +189,76 @@ const Dashboard = () => {
             </div>
           ))}
         </div>
-      </section>
+      </aside>
+
+      {/* ---------- MAIN DASHBOARD ---------- */}
+      <main className="flex-1 p-10 relative">
+
+        {/* Floating Button*/}
+        <button
+          onClick={() => setShowModal(true)}
+          className="fixed bottom-10 right-10 w-16 h-16 rounded-full bg-emerald-500 hover:bg-emerald-600 shadow-2xl flex items-center justify-center text-4xl font-bold text-white transition transform hover:scale-105"
+          title="Create Notebook"
+        >
+          +
+        </button>
+
+        {/* Saved */}
+        <section className="mb-14">
+          <h1 className="text-2xl font-bold mb-4">Saved Notebooks</h1>
+
+          <div className="flex gap-5 overflow-x-auto pb-4">
+            {openedNotebooks.length === 0 && (
+              <p className="text-neutral-500">No saved notebooks yet.</p>
+            )}
+
+            {openedNotebooks.map((book) => (
+              <div key={book.id} className="min-w-60 bg-neutral-800 border border-neutral-700 rounded-xl p-5 hover:border-emerald-500 transition cursor-pointer">
+                <h2 className="text-lg font-semibold mb-2">{book.title}</h2>
+                <p className="text-sm text-emerald-400">{book.topic}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* My */}
+        <section>
+          <h1 className="text-2xl font-bold mb-4">My Notebooks</h1>
+
+          <div className="flex gap-5 overflow-x-auto pb-4">
+            {myNotebooks.length === 0 && (
+              <p className="text-neutral-500">You haven’t created any notebooks yet.</p>
+            )}
+
+            {myNotebooks.map((book) => (
+              <div
+                key={book.id}
+                onClick={() => navigate(`/notebook/${book.id}`)}
+                className="bg-neutral-800 border border-neutral-700 rounded-xl p-6 hover:border-emerald-500 transition cursor-pointer"
+            >
+              <h2 className="text-xl font-semibold mb-2">{book.title}</h2>
+
+              <p className="text-neutral-400">Author: {book.author}</p>
+              <p className="text-neutral-400">
+                Published: {new Date(book.date).toDateString()}
+              </p>
+
+              <p className="text-sm text-emerald-400 mt-2">
+                Topic: {book.topic}
+              </p>
+
+              <div className="flex items-center justify-between mt-3">
+                <Stars rating={book.rating} />
+                <span className="text-sm text-neutral-400">
+                  {book.rating} • {book.reviews} ratings
+                </span>
+              </div>
+              </div>
+            ))}
+
+          </div>
+        </section>
+      </main>
 
       {showNotifications && (
         <NotificationPopup onClose={() => setShowNotifications(false)} />

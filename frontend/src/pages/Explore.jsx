@@ -1,8 +1,13 @@
+import { collection, onSnapshot } from "firebase/firestore";
 import React, { useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AppLayout from "../layouts/AppLayout";
 
 /* ⭐ STAR COMPONENT */
+import { db } from "../firebase/firebase";
+import NotebookPage from "./NotebookPage";
+/* ⭐ STAR COMPONENT (MUST BE OUTSIDE JSX) */
 const Stars = ({ rating }) => {
   const fullStars = Math.floor(rating);
   const halfStar = rating % 1 >= 0.5;
@@ -32,8 +37,26 @@ const Explore = () => {
   const [search, setSearch] = useState("");
   const [topic, setTopic] = useState("All");
   const [sort, setSort] = useState("none");
+  const [Notebooks,setNotebooks] = useState([]);
 
-  const filteredNotebooks = dummyNotebooks
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "notebooks"),
+      (snapshot) => {
+        setNotebooks(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        );
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+
+  const filteredNotebooks = Notebooks
     .filter((book) => {
       const matchesSearch =
         book.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -122,6 +145,48 @@ const Explore = () => {
               <span className="text-sm text-neutral-400">
                 {book.rating} • {book.reviews} ratings
               </span>
+            <option>All</option>
+            <option>Computer Science</option>
+            <option>Electronics</option>
+            <option>Mathematics</option>
+          </select>
+
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="p-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:outline-none focus:border-emerald-500"
+          >
+            <option value="none">Sort by</option>
+            <option value="date">Date (Newest)</option>
+            <option value="author">Author (A–Z)</option>
+            <option value="rating">Rating (Highest)</option>
+          </select>
+        </div>
+
+        {/* Cards */}
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-6">
+          {filteredNotebooks.map((book) => (
+            <div
+              key={book.id}
+              className="bg-neutral-800 border border-neutral-700 rounded-xl p-6 hover:border-emerald-500 transition cursor-pointer" onClick={() => navigate(`/notebook/${book.id}`)}
+            >
+              <h2 className="text-xl font-semibold mb-2">{book.title}</h2>
+
+              <p className="text-neutral-400">Author: {book.author}</p>
+              <p className="text-neutral-400">
+                Published: {new Date(book.date).toDateString()}
+              </p>
+
+              <p className="text-sm text-emerald-400 mt-2">
+                Topic: {book.topic}
+              </p>
+
+              <div className="flex items-center justify-between mt-3">
+                <Stars rating={book.rating} />
+                <span className="text-sm text-neutral-400">
+                  {book.rating} • {book.reviews} ratings
+                </span>
+              </div>
             </div>
           </div>
         ))}

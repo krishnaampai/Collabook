@@ -1,10 +1,30 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 
 const Notebook = () => {
   const { id } = useParams(); // dynamic notebook id from URL
 
-  const pdfUrl = "/sample.pdf";
+  const [pdfUrl, setPdfUrl] = useState("");
+  const [loadingPdf, setLoadingPdf] = useState(true);
+
+useEffect(() => {
+  const fetchChapter = async () => {
+    const snap = await getDoc(doc(db, "chapters", id));
+    console.log("Chapter ID:", id);
+    console.log("Exists:", snap.exists());
+    console.log("Data:", snap.data());
+    if (snap.exists()) {
+      setPdfUrl(snap.data().pdfUrl);
+     console.log(snap.data().pdfUrl);
+    }
+     setLoadingPdf(false);
+  };
+
+  fetchChapter();
+}, [id]);
+
 
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,11 +60,19 @@ const Notebook = () => {
         
         {/* PDF Viewer */}
         <div className="md:col-span-3 h-[80vh] border border-neutral-700 rounded-xl overflow-hidden bg-neutral-800">
-          <iframe
-            src={pdfUrl}
-            title="Notebook PDF"
-            className="w-full h-full"
-          />
+          {loadingPdf ? (
+              <p className="text-neutral-400">Loading PDF…</p>
+            ) : pdfUrl ? (
+              <iframe
+                src={pdfUrl}
+                title="Notebook PDF"
+                className="w-full h-full"
+              />
+            ) : (
+              <p className="text-red-400">PDF not found.</p>
+            )}
+
+
         </div>
 
         {/* Summary Sidebar */}
