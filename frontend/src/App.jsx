@@ -4,7 +4,7 @@ import Login from "./pages/Login";
 import Explore from "./pages/Explore";
 import Dashboard from "./pages/Dashboard";
 import Notebook from "./pages/notebook";
-
+import NotebookPage from "./pages/NotebookPage";
 function App() {
   return (
     <Routes>
@@ -13,7 +13,7 @@ function App() {
       <Route path="/explore" element={<Explore />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/notebook" element={<Notebook />} />
-
+      <Route path="/notebook/:notebookId" element={<NotebookPage />} />
 
     </Routes>
   );
