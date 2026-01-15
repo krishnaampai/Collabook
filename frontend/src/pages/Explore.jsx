@@ -2,9 +2,6 @@ import { collection, onSnapshot } from "firebase/firestore";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import AppLayout from "../layouts/AppLayout";
-
-/* ⭐ STAR COMPONENT */
 import { db } from "../firebase/firebase";
 import NotebookPage from "./NotebookPage";
 /* ⭐ STAR COMPONENT (MUST BE OUTSIDE JSX) */
@@ -17,20 +14,13 @@ const Stars = ({ rating }) => {
       {[...Array(5)].map((_, i) => {
         if (i < fullStars) return <span key={i}>⭐</span>;
         if (i === fullStars && halfStar) return <span key={i}>⭐</span>;
-        return <span key={i} className="opacity-30">⭐</span>;
+        return (
+          <span key={i} className="opacity-30">⭐</span>
+        );
       })}
     </div>
   );
 };
-
-/* 📘 NOTEBOOK DATA */
-const dummyNotebooks = [
-  { id: 1, title: "Computer Networks Notes", author: "Anjali S", date: "2024-10-05", topic: "Computer Science", rating: 4.5, reviews: 32 },
-  { id: 2, title: "Digital Logic Design", author: "Rahul M", date: "2024-09-18", topic: "Electronics", rating: 4.0, reviews: 18 },
-  { id: 3, title: "Operating Systems Handbook", author: "Meera K", date: "2024-11-02", topic: "Computer Science", rating: 4.8, reviews: 41 },
-  { id: 4, title: "Engineering Mathematics – III", author: "Arjun P", date: "2024-08-12", topic: "Mathematics", rating: 3.9, reviews: 12 },
-  { id: 5, title: "Signals and Systems", author: "Sneha R", date: "2024-10-22", topic: "Electronics", rating: 4.2, reviews: 27 },
-];
 
 const Explore = () => {
   const navigate = useNavigate();
@@ -74,77 +64,47 @@ const Explore = () => {
     });
 
   return (
-    <AppLayout active="explore">
+    <div className="min-h-screen bg-neutral-900 text-neutral-100 flex flex-col">
 
-      {/* Top bar */}
-      <div className="flex justify-between items-center mb-12">
-        <h1 className="text-3xl font-bold">
+      {/* Navbar */}
+      <nav className="bg-neutral-800 border-b border-neutral-700">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+          <h1
+            onClick={() => navigate("/")}
+            className="text-xl font-bold text-emerald-400 cursor-pointer"
+          >
+            Collabook
+          </h1>
+
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="px-5 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
+          >
+            Dashboard
+          </button>
+        </div>
+      </nav>
+
+      <section className="flex-1 px-6 py-16">
+
+        <h1 className="text-3xl font-bold text-center mb-8">
           Explore <span className="text-emerald-400">Notebooks</span>
         </h1>
 
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="px-5 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition"
-        >
-          Dashboard
-        </button>
-      </div>
+        {/* Filters */}
+        <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-4 mb-10">
+          <input
+            placeholder="Search by notebook name or topic..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="p-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:outline-none focus:border-emerald-500"
+          />
 
-      {/* Filters */}
-      <div className="max-w-5xl grid md:grid-cols-3 gap-4 mb-10">
-        <input
-          placeholder="Search by notebook name or topic..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="p-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:outline-none focus:border-emerald-500"
-        />
-
-        <select
-          value={topic}
-          onChange={(e) => setTopic(e.target.value)}
-          className="p-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:outline-none focus:border-emerald-500"
-        >
-          <option>All</option>
-          <option>Computer Science</option>
-          <option>Electronics</option>
-          <option>Mathematics</option>
-        </select>
-
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-          className="p-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:outline-none focus:border-emerald-500"
-        >
-          <option value="none">Sort by</option>
-          <option value="date">Date (Newest)</option>
-          <option value="author">Author (A–Z)</option>
-          <option value="rating">Rating (Highest)</option>
-        </select>
-      </div>
-
-      {/* Cards */}
-      <div className="max-w-5xl grid md:grid-cols-2 gap-6">
-        {filteredNotebooks.map((book) => (
-          <div
-            key={book.id}
-            className="bg-neutral-800 border border-neutral-700 rounded-xl p-6 hover:border-emerald-500 transition cursor-pointer"
+          <select
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            className="p-3 bg-neutral-800 border border-neutral-700 rounded-lg focus:outline-none focus:border-emerald-500"
           >
-            <h2 className="text-xl font-semibold mb-2">{book.title}</h2>
-
-            <p className="text-neutral-400">Author: {book.author}</p>
-            <p className="text-neutral-400">
-              Published: {new Date(book.date).toDateString()}
-            </p>
-
-            <p className="text-sm text-emerald-400 mt-2">
-              Topic: {book.topic}
-            </p>
-
-            <div className="flex items-center justify-between mt-3">
-              <Stars rating={book.rating} />
-              <span className="text-sm text-neutral-400">
-                {book.rating} • {book.reviews} ratings
-              </span>
             <option>All</option>
             <option>Computer Science</option>
             <option>Electronics</option>
@@ -188,13 +148,12 @@ const Explore = () => {
                 </span>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-    </AppLayout>
+      </section>
+    </div>
   );
 };
 
 export default Explore;
-
