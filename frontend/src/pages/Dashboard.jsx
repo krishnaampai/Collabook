@@ -6,7 +6,6 @@ import { onAuthStateChanged } from "firebase/auth";
 import { createNotebook } from "../services/notebookServices";
 
 import NotificationPopup from "../components/NotificationPopup";
-import CreateNotebookPopup from "../components/CreateNotebookPopup";
 
 const Stars = ({ rating }) => {
   const fullStars = Math.floor(rating);
@@ -88,6 +87,23 @@ const Dashboard = () => {
       unsubscribeSaved();
     };
   }, [user]);
+
+  const handleConfirmCreate = async () => {
+  if (!newTitle.trim()) return;
+
+  try {
+    setIsCreating(true);
+    await createNotebook(newTitle.trim());
+    setNewTitle("");
+    setShowModal(false);
+  } catch (err) {
+    console.error(err);
+    alert(err.message);
+  } finally {
+    setIsCreating(false);
+  }
+};
+
 
   /* ---------- UI ---------- */
   return (
@@ -191,7 +207,7 @@ const Dashboard = () => {
 
         {/* Floating Button*/}
         <button
-          onClick={() => setShowCreate(true)}
+          onClick={() => setShowModal(true)}
           className="fixed bottom-10 right-10 w-16 h-16 rounded-full bg-emerald-500 hover:bg-emerald-600 shadow-2xl flex items-center justify-center text-4xl font-bold text-white transition transform hover:scale-105"
           title="Create Notebook"
         >
@@ -260,9 +276,6 @@ const Dashboard = () => {
         <NotificationPopup onClose={() => setShowNotifications(false)} />
       )}
 
-      {showCreate && (
-        <CreateNotebookPopup onClose={() => setShowCreate(false)} />
-      )}
     </div>
   );
 };
