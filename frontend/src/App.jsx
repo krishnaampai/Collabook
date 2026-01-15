@@ -12,6 +12,10 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/explore" element={<Explore />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/notebook" element={<Notebook />} />
+      <Route path="/profile" element={<Profile />} />
+
+
       <Route path="/chapter/:id" element={<Notebook />} />
       <Route path="/notebook/:notebookId" element={<NotebookPage />} />
 
