@@ -2,32 +2,57 @@ import { useParams } from "react-router-dom";
 import { useState,useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import CommentSection from "../components/commentSection";
 
 const Notebook = () => {
   const { id } = useParams(); // dynamic notebook id from URL
 
   const [pdfUrl, setPdfUrl] = useState("");
   const [loadingPdf, setLoadingPdf] = useState(true);
+  const [notebookId, setNotebookId] = useState(null);
+
+
+// useEffect(() => {
+//   const fetchChapter = async () => {
+//     const snap = await getDoc(doc(db, "chapters", id));
+    
+//     if (snap.exists()) {
+//       setPdfUrl(snap.data().pdfUrl);
+//      console.log(snap.data().pdfUrl);
+//     }
+//      setLoadingPdf(false);
+//       setNotebookId(data.notebookId); 
+//   };
+
+//   fetchChapter();
+// }, [id]);
 
 useEffect(() => {
   const fetchChapter = async () => {
     const snap = await getDoc(doc(db, "chapters", id));
+
     console.log("Chapter ID:", id);
     console.log("Exists:", snap.exists());
-    console.log("Data:", snap.data());
+
     if (snap.exists()) {
-      setPdfUrl(snap.data().pdfUrl);
-     console.log(snap.data().pdfUrl);
+      console.log("Chapter data:", snap.data()); // 👈 KEY LINE
+
+      const data = snap.data();
+      setPdfUrl(data.pdfUrl);
+      setNotebookId(data.notebookId);
     }
-     setLoadingPdf(false);
+
+    setLoadingPdf(false);
   };
 
   fetchChapter();
 }, [id]);
 
 
+
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
+
 
   const handleSummarise = async () => {
     try {
@@ -93,6 +118,8 @@ useEffect(() => {
           <div className="flex-1 overflow-y-auto text-sm text-neutral-300 whitespace-pre-wrap border border-neutral-700 rounded-lg p-3">
             {summary || "Click the button to generate a summary."}
           </div>
+          <div>{notebookId && <CommentSection notebookId={notebookId} />}
+</div>
         </div>
       </div>
     </div>
