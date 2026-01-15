@@ -1,5 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv").config();
+const errorHandler = require("./middleware/errorHandler");
 const cors = require("cors");
 
 const app = express();
@@ -15,8 +16,12 @@ app.get('/',(req,res)=>{
 
 app.use("/login",require("./routes/userRoutes"));
 
+app.use("/api/users", require("./routes/userRoutes"));
+// app.use("/api/projects", require("./routes/projectRoutes"));
+app.use("/api/upload", require("./routes/uploadRoutes"));
 app.use("/api/summarise", require("./routes/summariseRoutes"));
 
+app.use(errorHandler);
 // start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

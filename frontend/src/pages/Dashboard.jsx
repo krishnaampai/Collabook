@@ -8,6 +8,24 @@ import { createNotebook } from "../services/notebookServices";
 import NotificationPopup from "../components/NotificationPopup";
 import CreateNotebookPopup from "../components/CreateNotebookPopup";
 
+const Stars = ({ rating }) => {
+  const fullStars = Math.floor(rating);
+  const halfStar = rating % 1 >= 0.5;
+
+  return (
+    <div className="flex items-center gap-1">
+      {[...Array(5)].map((_, i) => {
+        if (i < fullStars) return <span key={i}>⭐</span>;
+        if (i === fullStars && halfStar) return <span key={i}>⭐</span>;
+        return (
+          <span key={i} className="opacity-30">⭐</span>
+        );
+      })}
+    </div>
+  );
+};
+
+
 const Dashboard = () => {
   const navigate = useNavigate();
 
@@ -208,11 +226,31 @@ const Dashboard = () => {
             )}
 
             {myNotebooks.map((book) => (
-              <div key={book.id} onClick={() => navigate(`/notebook/${book.id}`)} className="min-w-60 bg-neutral-800 border border-neutral-700 rounded-xl p-5 hover:border-emerald-500 transition cursor-pointer">
-                <h2 className="text-lg font-semibold mb-2">{book.title}</h2>
-                <p className="text-sm text-emerald-400">{book.topic}</p>
+              <div
+                key={book.id}
+                onClick={() => navigate(`/notebook/${book.id}`)}
+                className="bg-neutral-800 border border-neutral-700 rounded-xl p-6 hover:border-emerald-500 transition cursor-pointer"
+            >
+              <h2 className="text-xl font-semibold mb-2">{book.title}</h2>
+
+              <p className="text-neutral-400">Author: {book.author}</p>
+              <p className="text-neutral-400">
+                Published: {new Date(book.date).toDateString()}
+              </p>
+
+              <p className="text-sm text-emerald-400 mt-2">
+                Topic: {book.topic}
+              </p>
+
+              <div className="flex items-center justify-between mt-3">
+                <Stars rating={book.rating} />
+                <span className="text-sm text-neutral-400">
+                  {book.rating} • {book.reviews} ratings
+                </span>
+              </div>
               </div>
             ))}
+
           </div>
         </section>
       </main>
