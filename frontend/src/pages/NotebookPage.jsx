@@ -26,9 +26,10 @@ const NotebookPage = () => {
   }, [notebookId]);
 
   return (
-    <div className="min-h-screen bg-neutral-900 text-neutral-100 p-8">
+    <div className="min-h-screen bg-neutral-900 text-neutral-100 p-8 ">
+      <div className="flex items-center justify-between mb-6">
       <h1 className="text-2xl font-bold mb-6">Chapters</h1>
-
+      <button  className="px-5 py-2 rounded-lg bg-emerald-500 text-white font-semibold hover:bg-emerald-600 transition">Save</button></div>
       {chapters.length === 0 && (
         <p className="text-neutral-400">No chapters yet.</p>
       )}
