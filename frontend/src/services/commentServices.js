@@ -14,6 +14,8 @@ export const addComment = async ({ notebookId, text }) => {
     createdAt: serverTimestamp(),
   });
 
+  console.log(notebookId);
+
   const notebookSnap = await getDoc(doc(db, "notebooks", notebookId));
   const { ownerId, title } = notebookSnap.data();
 

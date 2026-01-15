@@ -2,7 +2,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-
 const NotebookPage = () => {
   const { notebookId } = useParams();
   const navigate = useNavigate();
