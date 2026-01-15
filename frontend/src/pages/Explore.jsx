@@ -1,6 +1,9 @@
+import { collection, onSnapshot } from "firebase/firestore";
 import React, { useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { db } from "../firebase/firebase";
+import NotebookPage from "./NotebookPage";
 /* ⭐ STAR COMPONENT (MUST BE OUTSIDE JSX) */
 const Stars = ({ rating }) => {
   const fullStars = Math.floor(rating);
@@ -19,62 +22,31 @@ const Stars = ({ rating }) => {
   );
 };
 
-/* 📘 NOTEBOOK DATA */
-const dummyNotebooks = [
-  {
-    id: 1,
-    title: "Computer Networks Notes",
-    author: "Anjali S",
-    date: "2024-10-05",
-    topic: "Computer Science",
-    rating: 4.5,
-    reviews: 32,
-  },
-  {
-    id: 2,
-    title: "Digital Logic Design",
-    author: "Rahul M",
-    date: "2024-09-18",
-    topic: "Electronics",
-    rating: 4.0,
-    reviews: 18,
-  },
-  {
-    id: 3,
-    title: "Operating Systems Handbook",
-    author: "Meera K",
-    date: "2024-11-02",
-    topic: "Computer Science",
-    rating: 4.8,
-    reviews: 41,
-  },
-  {
-    id: 4,
-    title: "Engineering Mathematics – III",
-    author: "Arjun P",
-    date: "2024-08-12",
-    topic: "Mathematics",
-    rating: 3.9,
-    reviews: 12,
-  },
-  {
-    id: 5,
-    title: "Signals and Systems",
-    author: "Sneha R",
-    date: "2024-10-22",
-    topic: "Electronics",
-    rating: 4.2,
-    reviews: 27,
-  },
-];
-
 const Explore = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [topic, setTopic] = useState("All");
   const [sort, setSort] = useState("none");
+  const [Notebooks,setNotebooks] = useState([]);
 
-  const filteredNotebooks = dummyNotebooks
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "notebooks"),
+      (snapshot) => {
+        setNotebooks(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        );
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+
+  const filteredNotebooks = Notebooks
     .filter((book) => {
       const matchesSearch =
         book.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -156,7 +128,7 @@ const Explore = () => {
           {filteredNotebooks.map((book) => (
             <div
               key={book.id}
-              className="bg-neutral-800 border border-neutral-700 rounded-xl p-6 hover:border-emerald-500 transition cursor-pointer"
+              className="bg-neutral-800 border border-neutral-700 rounded-xl p-6 hover:border-emerald-500 transition cursor-pointer" onClick={() => navigate(`/notebook/${book.id}`)}
             >
               <h2 className="text-xl font-semibold mb-2">{book.title}</h2>
 

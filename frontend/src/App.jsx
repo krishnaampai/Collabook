@@ -3,7 +3,7 @@ import Landing from "./pages/landing";
 import Login from "./pages/Login";
 import Explore from "./pages/Explore";
 import Dashboard from "./pages/Dashboard";
-import Notebook from "./pages/notebook";
+import Notebook from "./pages/Chapter";
 import NotebookPage from "./pages/NotebookPage";
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/explore" element={<Explore />} />
       <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/notebook" element={<Notebook />} />
+      <Route path="/chapter/:id" element={<Notebook />} />
       <Route path="/notebook/:notebookId" element={<NotebookPage />} />
 
     </Routes>
