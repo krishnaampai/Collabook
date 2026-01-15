@@ -7,6 +7,7 @@ import { createNotebook } from "../services/notebookServices";
 
 import NotificationPopup from "../components/NotificationPopup";
 import CreateNotebookPopup from "../components/CreateNotebookPopup";
+import AppLayout from "../layouts/AppLayout";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -14,8 +15,7 @@ const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [myNotebooks, setMyNotebooks] = useState([]);
   const [openedNotebooks, setOpenedNotebooks] = useState([]);
-  
-  // --- NEW STATE FOR MODAL ---
+
   const [showModal, setShowModal] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [isCreating, setIsCreating] = useState(false);
@@ -35,7 +35,6 @@ const Dashboard = () => {
   useEffect(() => {
     if (!user) return;
 
-    // My notebooks
     const myQuery = query(
       collection(db, "notebooks"),
       where("ownerId", "==", user.uid)
@@ -50,7 +49,6 @@ const Dashboard = () => {
       );
     });
 
-    // Saved notebooks
     const savedQuery = query(
       collection(db, "notebooks"),
       where("savedBy", "array-contains", user.uid)
@@ -71,16 +69,31 @@ const Dashboard = () => {
     };
   }, [user]);
 
-  /* ---------- UI ---------- */
-  return (
-    <div className="min-h-screen bg-neutral-900 text-neutral-100 flex relative">
+  /* ---------- CREATE NOTEBOOK ---------- */
+  const handleConfirmCreate = async () => {
+    if (!newTitle.trim()) return;
 
-      {/* --- MODAL CARD OVERLAY --- */}
+    try {
+      setIsCreating(true);
+      await createNotebook(newTitle);
+      setNewTitle("");
+      setShowModal(false);
+    } catch (err) {
+      console.error("Create notebook failed:", err);
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  return (
+    <AppLayout active="dashboard">
+
+      {/* ---------- MODAL ---------- */}
       {showModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="bg-neutral-800 border border-neutral-700 p-8 rounded-2xl shadow-2xl w-full max-w-md mx-4">
             <h2 className="text-xl font-bold mb-4">Create New Notebook</h2>
-            <input 
+            <input
               autoFocus
               className="w-full bg-neutral-900 border border-neutral-700 rounded-lg p-3 mb-6 focus:outline-none focus:border-emerald-500 transition"
               placeholder="Enter notebook title..."
@@ -88,13 +101,13 @@ const Dashboard = () => {
               onChange={(e) => setNewTitle(e.target.value)}
             />
             <div className="flex gap-3 justify-end">
-              <button 
+              <button
                 onClick={() => setShowModal(false)}
                 className="px-4 py-2 rounded-lg text-neutral-400 hover:text-white transition"
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={handleConfirmCreate}
                 disabled={isCreating}
                 className="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 rounded-lg font-semibold transition disabled:opacity-50"
@@ -106,118 +119,60 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* ---------- LEFT SIDEBAR ---------- */}
-      <aside className="w-72 border-r border-neutral-800 p-6 flex flex-col items-center">
+      {/* ---------- PAGE HEADER ---------- */}
+      <div className="mb-12">
+        <h1 className="text-3xl font-bold">
+          Dashboard <span className="text-emerald-400">Overview</span>
+        </h1>
+        <p className="text-neutral-400 mt-2">
+          Manage your notebooks and activity
+        </p>
+      </div>
 
-        {/* Profile */}
-        <div className="flex flex-col items-center text-center mt-4">
-          {user ? (
-            <>
-              {user.photoURL ? (
-                <img src={user.photoURL} alt="Profile" className="w-28 h-28 rounded-full border-2 border-emerald-500 object-cover" />
-              ) : (
-                <div className="w-28 h-28 rounded-full bg-neutral-800 border-2 border-emerald-500 flex items-center justify-center text-3xl font-bold text-emerald-400">
-                  {user.email?.charAt(0).toUpperCase()}
-                </div>
-              )}
-              <h2 className="mt-4 text-xl font-semibold">{user.displayName || "User"}</h2>
-              <p className="text-sm text-neutral-400 mt-1">{user.email}</p>
-            </>
-          ) : (
-            <>
-              <div className="w-28 h-28 rounded-full bg-neutral-800 animate-pulse" />
-              <div className="h-4 w-24 bg-neutral-800 rounded mt-4 animate-pulse" />
-              <div className="h-3 w-32 bg-neutral-800 rounded mt-2 animate-pulse" />
-            </>
+      {/* Floating Button */}
+      <button
+        onClick={() => setShowCreate(true)}
+        className="fixed bottom-10 right-10 w-16 h-16 rounded-full bg-emerald-500 hover:bg-emerald-600 shadow-2xl flex items-center justify-center text-4xl font-bold text-white transition transform hover:scale-105"
+      >
+        +
+      </button>
+
+      {/* Saved */}
+      <section className="mb-14">
+        <h1 className="text-2xl font-bold mb-4">Saved Notebooks</h1>
+
+        <div className="flex gap-5 overflow-x-auto pb-4">
+          {openedNotebooks.length === 0 && (
+            <p className="text-neutral-500">No saved notebooks yet.</p>
           )}
+
+          {openedNotebooks.map((book) => (
+            <div key={book.id} className="min-w-60 bg-neutral-800 border border-neutral-700 rounded-xl p-5 hover:border-emerald-500 transition cursor-pointer">
+              <h2 className="text-lg font-semibold mb-2">{book.title}</h2>
+              <p className="text-sm text-emerald-400">{book.topic}</p>
+            </div>
+          ))}
         </div>
+      </section>
 
-        {/* Buttons */}
-        <div className="flex flex-col gap-3 w-full mt-10">
+      {/* My */}
+      <section>
+        <h1 className="text-2xl font-bold mb-4">My Notebooks</h1>
 
-          <button
-            onClick={() => navigate("/profile")}
-            className="w-full py-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 transition"
-          >
-            Profile
-          </button>
+        <div className="flex gap-5 overflow-x-auto pb-4">
+          {myNotebooks.length === 0 && (
+            <p className="text-neutral-500">You haven’t created any notebooks yet.</p>
+          )}
 
-          <button
-            onClick={() => setShowNotifications(true)}
-            className="w-full py-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 transition"
-          >
-            Notifications
-          </button>
-
-          <button
-            onClick={() => navigate("/explore")}
-            className="w-full py-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 transition"
-          >
-            Explore
-          </button>
-
-          <button
-            onClick={async () => {
-              await auth.signOut();
-              navigate("/login");
-            }}
-            className="w-full py-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 transition text-red-400"
-          >
-            Logout
-          </button>
+          {myNotebooks.map((book) => (
+            <div key={book.id} onClick={() => navigate(`/notebook/${book.id}`)} className="min-w-60 bg-neutral-800 border border-neutral-700 rounded-xl p-5 hover:border-emerald-500 transition cursor-pointer">
+              <h2 className="text-lg font-semibold mb-2">{book.title}</h2>
+              <p className="text-sm text-emerald-400">{book.topic}</p>
+            </div>
+          ))}
         </div>
-      </aside>
+      </section>
 
-      {/* ---------- MAIN DASHBOARD ---------- */}
-      <main className="flex-1 p-10 relative">
-
-        {/* Floating Button*/}
-        <button
-          onClick={() => setShowCreate(true)}
-          className="fixed bottom-10 right-10 w-16 h-16 rounded-full bg-emerald-500 hover:bg-emerald-600 shadow-2xl flex items-center justify-center text-4xl font-bold text-white transition transform hover:scale-105"
-          title="Create Notebook"
-        >
-          +
-        </button>
-
-        {/* Saved */}
-        <section className="mb-14">
-          <h1 className="text-2xl font-bold mb-4">Saved Notebooks</h1>
-
-          <div className="flex gap-5 overflow-x-auto pb-4">
-            {openedNotebooks.length === 0 && (
-              <p className="text-neutral-500">No saved notebooks yet.</p>
-            )}
-
-            {openedNotebooks.map((book) => (
-              <div key={book.id} className="min-w-60 bg-neutral-800 border border-neutral-700 rounded-xl p-5 hover:border-emerald-500 transition cursor-pointer">
-                <h2 className="text-lg font-semibold mb-2">{book.title}</h2>
-                <p className="text-sm text-emerald-400">{book.topic}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* My */}
-        <section>
-          <h1 className="text-2xl font-bold mb-4">My Notebooks</h1>
-
-          <div className="flex gap-5 overflow-x-auto pb-4">
-            {myNotebooks.length === 0 && (
-              <p className="text-neutral-500">You haven’t created any notebooks yet.</p>
-            )}
-
-            {myNotebooks.map((book) => (
-              <div key={book.id} onClick={() => navigate(`/notebook/${book.id}`)} className="min-w-60 bg-neutral-800 border border-neutral-700 rounded-xl p-5 hover:border-emerald-500 transition cursor-pointer">
-                <h2 className="text-lg font-semibold mb-2">{book.title}</h2>
-                <p className="text-sm text-emerald-400">{book.topic}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      </main>
-
-      {/* ---------- POPUPS ---------- */}
       {showNotifications && (
         <NotificationPopup onClose={() => setShowNotifications(false)} />
       )}
@@ -225,7 +180,7 @@ const Dashboard = () => {
       {showCreate && (
         <CreateNotebookPopup onClose={() => setShowCreate(false)} />
       )}
-    </div>
+    </AppLayout>
   );
 };
 
