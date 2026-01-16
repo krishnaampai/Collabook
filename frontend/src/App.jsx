@@ -5,7 +5,7 @@ import Explore from "./pages/Explore";
 import Dashboard from "./pages/Dashboard";
 import Notebook from "./pages/Chapter";
 import NotebookPage from "./pages/NotebookPage";
-import Profile from "./pages/profile";
+import Profile from "./pages/Profile";
 import MainLayout from "./components/MainLayout";
 function App() {
   return (
