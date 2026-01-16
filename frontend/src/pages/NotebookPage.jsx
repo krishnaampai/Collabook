@@ -37,7 +37,7 @@ const NotebookPage = () => {
     formData.append("file", file);
      formData.append("resource_type", "raw");
 
-    const res = await fetch("/api/upload", {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/upload`, {
       method: "POST",
       body: formData,
     });
