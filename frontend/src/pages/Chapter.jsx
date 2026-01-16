@@ -34,9 +34,12 @@ const Notebook = () => {
     try {
       setLoading(true);
 
-      const res = await fetch(`/api/summarise/${id}`, {
-        method: "POST",
-      });
+      const res = await fetch(
+  `${import.meta.env.VITE_API_BASE_URL}/api/summarise/${id}`,
+  {
+    method: "POST",
+  }
+);
 
       const data = await res.json();
       setSummary(data.summary);
