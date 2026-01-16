@@ -35,6 +35,7 @@ const NotebookPage = () => {
   const uploadPdf = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
+     formData.append("resource_type", "raw");
 
     const res = await fetch("/api/upload", {
       method: "POST",
@@ -42,6 +43,7 @@ const NotebookPage = () => {
     });
 
     const data = await res.json();
+    console.log("Upload response:", data); 
     return data.url;
   };
 
