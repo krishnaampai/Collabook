@@ -37,6 +37,7 @@ const Dashboard = () => {
   // --- NEW STATE FOR MODAL ---
   const [showModal, setShowModal] = useState(false);
   const [newTitle, setNewTitle] = useState("");
+  const [newTopic, setNewTopic] = useState("");
   const [isCreating, setIsCreating] = useState(false);
 
   const [showNotifications, setShowNotifications] = useState(false);
@@ -95,7 +96,7 @@ const Dashboard = () => {
 
   try {
     setIsCreating(true);
-    await createNotebook(newTitle.trim());
+    await createNotebook(newTitle.trim(),newTopic.trim());
     setNewTitle("");
     setShowModal(false);
   } catch (err) {
@@ -117,11 +118,18 @@ const Dashboard = () => {
           <div className="bg-neutral-800 border border-neutral-700 p-8 rounded-2xl shadow-2xl w-full max-w-md mx-4">
             <h2 className="text-xl font-bold mb-4">Create New Notebook</h2>
             <input 
-              autoFocus
+              
               className="w-full bg-neutral-900 border border-neutral-700 rounded-lg p-3 mb-6 focus:outline-none focus:border-emerald-500 transition"
               placeholder="Enter notebook title..."
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
+            />
+            <input 
+              
+              className="w-full bg-neutral-900 border border-neutral-700 rounded-lg p-3 mb-6 focus:outline-none focus:border-emerald-500 transition"
+              placeholder="Enter topic: "
+              value={newTopic}
+              onChange={(e) => setNewTopic(e.target.value)}
             />
             <div className="flex gap-3 justify-end">
               <button 
@@ -253,7 +261,7 @@ const Dashboard = () => {
 
               <p className="text-neutral-400">Author: {book.author}</p>
               <p className="text-neutral-400">
-                Published: {new Date(book.date).toDateString()}
+                Published: {book.date?.toDate? book.date.toDate().toDateString(): new Date(book.date).toDateString()}
               </p>
 
               <p className="text-sm text-emerald-400 mt-2">
