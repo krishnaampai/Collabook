@@ -66,24 +66,7 @@ const Explore = () => {
   return (
     <div className="min-h-screen bg-neutral-900 text-neutral-100 flex flex-col">
 
-      {/* Navbar */}
-      <nav className="bg-neutral-800 border-b border-neutral-700">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1
-            onClick={() => navigate("/")}
-            className="text-xl font-bold text-emerald-400 cursor-pointer"
-          >
-            Collabook
-          </h1>
-
-          <button
-            onClick={() => navigate("/dashboard")}
-            className="px-5 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
-          >
-            Dashboard
-          </button>
-        </div>
-      </nav>
+      
 
       <section className="flex-1 px-6 py-16">
 

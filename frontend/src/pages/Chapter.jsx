@@ -29,18 +29,17 @@ const Notebook = () => {
 
 useEffect(() => {
   const fetchChapter = async () => {
-    const snap = await getDoc(doc(db, "chapters", id));
+  //   const snap = await getDoc(doc(db, "chapters", id));
 
-    console.log("Chapter ID:", id);
-    console.log("Exists:", snap.exists());
+   
 
-    if (snap.exists()) {
-      console.log("Chapter data:", snap.data()); // 👈 KEY LINE
+  //   if (snap.exists()) {
 
-      const data = snap.data();
-      setPdfUrl(data.pdfUrl);
-      setNotebookId(data.notebookId);
-    }
+  //     const data = snap.data();
+  //     setPdfUrl(data.pdfUrl);
+  //     setNotebookId(data.notebookId);
+  //   }
+  setPdfUrl("/sample.pdf");
 
     setLoadingPdf(false);
   };
