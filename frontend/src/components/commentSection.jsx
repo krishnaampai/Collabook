@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import { addComment } from "../services/CommentServices";
+import { addComment } from "../services/commentServices";
 
 const CommentSection = ({ notebookId }) => {
   const [text, setText] = useState("");
