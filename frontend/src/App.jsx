@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import Landing from "./pages/landing";
+import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Explore from "./pages/Explore";
 import Dashboard from "./pages/Dashboard";
@@ -11,7 +11,6 @@ function App() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
-        <Route path="/" element={<Landing />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/chapter/:id" element={<Notebook />} />
@@ -19,6 +18,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
       </Route>
       <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Landing />} />
 
     </Routes>
   );

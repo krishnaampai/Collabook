@@ -7,6 +7,8 @@ import { createNotebook } from "../services/notebookServices";
 
 import NotificationPopup from "../components/NotificationPopup";
 
+
+
 const Stars = ({ rating }) => {
   const fullStars = Math.floor(rating);
   const halfStar = rating % 1 >= 0.5;
